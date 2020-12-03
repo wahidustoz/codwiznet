@@ -1,12 +1,10 @@
 @inherits LayoutComponentBase
-
-<div class="page">
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-        </div>
-        <div class="content px-4">
+<div class="main">
+    <Navbar/>
+    <div class="row px-4">
+        <div class="col-md-10 col-lg-8 mx-auto">
             @Body
         </div>
     </div>
 </div>
+<Footer />
