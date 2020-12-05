@@ -1,24 +1,32 @@
 ﻿@page "/"
 @using spa.Services
 @using spa.Models.Github
-@inject IGithubClient gitClient
 @inject IMarkdownClient markdownClient
+@inject PostsRepo postsRepo
 
 <div class="row px-4">
     <LeftPanel />
-    <div class="col-sm-12 col-md-10 col-lg-8 mx-auto order-first">
-        <h1>Hello, world!</h1>
-
-        <p>Welcome to your new app.</p>
-
-        @foreach (var content in contents)
-        {
-            <p>@content.Name</p>
-            <p>@content.Type</p>
-            <p>@content.DownloadUrl</p>
-        }
-
-        @(new MarkupString(markdown))
+    <div class="col-sm-12 col-md-10 col-lg-8 mx-auto order-first mt-5">
+        <div class="row my-3">
+            @foreach (var post in posts)
+            {
+                string contentLength = "col-12";
+                if(!string.IsNullOrWhiteSpace(post.HeaderImageUrl))
+                {
+                    contentLength = "col-10";
+                    <div class="col-2">
+                        <img src="@post.HeaderImageUrl" width="100%"/>
+                    </div>
+                }
+                
+                <div class="@contentLength">
+                    @(new MarkupString(post.Title))
+                    @(new MarkupString(post.Description))
+                    @(new MarkupString(post.Tags))
+                    @(new MarkupString(post.CreatedAt.Value.ToString("MMM d, yyyy")))
+                </div>
+            }
+        </div>
     </div>
     <RightPanel />
 </div>
@@ -26,11 +34,18 @@
 @code
 { 
     List<GitContent> contents = new List<GitContent>();
+    List<spa.Models.Post> posts = new List<spa.Models.Post>();
     string markdown = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        contents = await gitClient.GetFolderContents();
-        markdown = await markdownClient.ParseMarkdownFromUrl(contents[0].DownloadUrl);
+        posts = await postsRepo.GetPostsAsync();
+
+        for(int i = 0; i < posts.Count; i++)
+        {
+            posts[i].Title = await markdownClient.ParseMarkdownFromUrl(posts[i].TitleUrl);
+            posts[i].Description = await markdownClient.ParseMarkdownFromUrl(posts[i].DescriptionUrl);
+            posts[i].Tags = await markdownClient.ParseMarkdownFromUrl(posts[i].TagsUrl);
+        }
     } 
 }
