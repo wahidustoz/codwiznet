@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using spa.Services
+@using spa.Models.Github
 @inject IGithubClient gitClient
+@inject IMarkdownClient markdownClient
 
 <div class="row px-4">
     <LeftPanel />
@@ -9,17 +11,26 @@
 
         <p>Welcome to your new app.</p>
 
-        @content
+        @foreach (var content in contents)
+        {
+            <p>@content.Name</p>
+            <p>@content.Type</p>
+            <p>@content.DownloadUrl</p>
+        }
+
+        @(new MarkupString(markdown))
     </div>
     <RightPanel />
 </div>
 
 @code
-{
-    string content = string.Empty;
+{ 
+    List<GitContent> contents = new List<GitContent>();
+    string markdown = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        content = await gitClient.GetPosts();
-    }
+        contents = await gitClient.GetFolderContents();
+        markdown = await markdownClient.ParseMarkdownFromUrl(contents[0].DownloadUrl);
+    } 
 }
