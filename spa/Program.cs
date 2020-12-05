@@ -26,6 +26,7 @@ namespace spa
 
             builder.Services.AddTransient<IGithubClient, GithubClient>();
             builder.Services.AddTransient<IMarkdownClient, MarkdownClient>();
+            builder.Services.AddTransient<PostsRepo>();
 
             await builder.Build().RunAsync();
         }

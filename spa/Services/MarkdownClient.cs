@@ -41,6 +41,11 @@ namespace spa.Services
 
         public async Task<string> ParseMarkdownFromUrl(string url, ParseMode mode = ParseMode.GithubFlavoredMarkdown)
         {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                mLogger.LogError($"URL to PasreMarkdownFromUrl is empty at {nameof(MarkdownClient)}");
+                return string.Empty;
+            }
 
             HttpRequestMessage requestMessage = new HttpRequestMessage()
             {
