@@ -4,7 +4,7 @@
 using namespace std;
 namespace Program
 {
-  pubic class Program
+  public class Program
   {
     private readonly HttpClient mClient;
     string empty;
