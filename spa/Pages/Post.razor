@@ -1,20 +1,54 @@
-@page "/post"
+@page "/posts"
+@page "/posts/{postfolder}"
+
+@using spa.Services
+@inject PostsRepo postsRepo
+@inject IMarkdownClient markdownClient
+
 <ScrollProgress />
-<div class="row px-4">
-    <div class="col-md-10 col-lg-8 mx-lg-auto">
-        <h3>Scroll Down to See The Effect</h3>
-        <p>We have created a "progress bar" to <b>show how far a page has been scrolled</b>.</p>
-        <p>It also <b>works when you scroll back up</b>.</p>
-        <p>It is even <b>responsive</b>! Resize the browser window to see the effect.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
-        <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+<div class="row m-0 px-4">
+    <LeftPanel />
+    <div class="col-sm-12 col-md-10 col-lg-8 mx-auto order-first mt-0">
+        @if(!string.IsNullOrWhiteSpace(mPost.HeaderImageUrl))
+        {
+            <img class="post-link-image" src="https://picsum.photos/seed/picsum/1920/1080"/>
+        }
+        @(new MarkupString(mPost.Title))
+        @(new MarkupString(mPost.Description))
+        @(new MarkupString(mPost.Content))
+
+
+        <div class="mr-auto mt-5">
+            <a class="btn btn-large btn-dark" href="@EditLink">
+                <i class="fas fa-code-branch mx-1"></i> and  <i class="fas fa-star mx-1"></i> on <i class="fab fa-github-alt fa-lg mx-1"></i>
+            </a>
+        </div>
     </div>
+    <RightPanel />
 </div>
+
+@code
+{
+    [Parameter]
+    public string PostFolder { get; set; } = string.Empty;
+
+    public spa.Models.Post mPost { get; set; } = new Models.Post();
+
+    public string EditLink { get; set; } = string.Empty;
+    
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        Console.WriteLine("Osfsdfsdfsf");
+        PostFolder = PostFolder ?? string.Empty;
+        mPost = await postsRepo.GetPostAsync(PostFolder);
+        
+
+        mPost.Title = await markdownClient.ParseMarkdownFromUrl(mPost.TitleUrl);
+        mPost.Description = await markdownClient.ParseMarkdownFromUrl(mPost.DescriptionUrl);
+        mPost.Content = await markdownClient.ParseMarkdownFromUrl(mPost.ContentUrl);
+        mPost.Tags = await markdownClient.ParseMarkdownFromUrl(mPost.TagsUrl);
+
+        EditLink = $"https://github.com/wahid-d/codwiz.net/tree/dev/posts/{PostFolder}";
+    }   
+}

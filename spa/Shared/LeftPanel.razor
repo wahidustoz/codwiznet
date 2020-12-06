@@ -1,3 +1,39 @@
+@using spa.Services
+@using spa.Models.Github
+@inject IMarkdownClient markdownClient
+@inject PostsRepo postsRepo
+@inject NavigationManager navigation
+
 <div class="left col-md-12 col-lg-2 order-lg-first mt-5" style="width: 100%;">
-    <h5>Related posts</h5>
+    <h5>Read more</h5>
+    @foreach (var post in Posts)
+    {
+        <a href="/posts/@post.FolderName" class="row text-decoration-none text-dark read-more-link">
+            @(new MarkupString(post.Title))
+        </a>
+    }
 </div>
+
+@code 
+{
+    public List<spa.Models.Post> Posts { get; set; } = new List<Models.Post>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Posts = await postsRepo.GetPostsAsync();
+        if(Posts.Count > 0)
+        {
+            Posts = Posts.OrderBy(p => p.FolderName).Take(5).ToList();
+            
+            for(int i = 0; i < Posts.Count; i++)
+            {
+                var title = await markdownClient.ParseMarkdownFromUrl(Posts[i].TitleUrl);
+                if(!string.IsNullOrWhiteSpace(title))
+                {
+                    Posts[i].Title = title.Replace("h1", "h6");
+                }
+            }
+
+        }
+    }
+}

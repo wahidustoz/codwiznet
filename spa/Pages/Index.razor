@@ -3,32 +3,41 @@
 @using spa.Models.Github
 @inject IMarkdownClient markdownClient
 @inject PostsRepo postsRepo
+@inject NavigationManager navigation
 
-<div class="row px-4">
-    <LeftPanel />
-    <div class="col-sm-12 col-md-10 col-lg-8 mx-auto order-first mt-5">
-        <div class="row my-3">
+<div class="row m-0 px-4">
+    <div class="col-sm-12 col-md-10 col-lg-8 mx-auto mt-0 mt-sm-1">
             @foreach (var post in posts)
             {
-                string contentLength = "col-12";
-                if(!string.IsNullOrWhiteSpace(post.HeaderImageUrl))
+                <a href="/posts/@post.FolderName" class="row my-1 text-decoration-none text-dark post-link py-0">
+                @if(!string.IsNullOrWhiteSpace(post.HeaderImageUrl))
                 {
-                    contentLength = "col-10";
-                    <div class="col-2">
-                        <img src="@post.HeaderImageUrl" width="100%"/>
+                    <div class="col-12">
+                        <img class="post-link-image" src="@post.HeaderImageUrl"/>
                     </div>
                 }
                 
-                <div class="@contentLength">
+                <div class="col-12">
                     @(new MarkupString(post.Title))
                     @(new MarkupString(post.Description))
-                    @(new MarkupString(post.Tags))
-                    @(new MarkupString(post.CreatedAt.Value.ToString("MMM d, yyyy")))
+                    <div class="d-flex pt-2">
+                        <div class="mr-auto">
+                            @(new MarkupString(post.Tags))
+                        </div>
+                        <strong>
+                            @{
+                                var hasDatetime = DateTime.TryParse(post.FolderName, out var result);
+                                if(hasDatetime)
+                                {
+                                    @result.ToString("MMM d, yyy")
+                                }
+                            }
+                        </strong>
+                    </div>
                 </div>
+            </a>
             }
-        </div>
     </div>
-    <RightPanel />
 </div>
 
 @code
@@ -47,5 +56,10 @@
             posts[i].Description = await markdownClient.ParseMarkdownFromUrl(posts[i].DescriptionUrl);
             posts[i].Tags = await markdownClient.ParseMarkdownFromUrl(posts[i].TagsUrl);
         }
+
     } 
+    void NavigateToPost(spa.Models.Post post)
+    {
+        navigation.NavigateTo($"/post/{post.FolderName}", true);
+    }
 }

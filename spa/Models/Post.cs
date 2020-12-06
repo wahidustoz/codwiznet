@@ -23,7 +23,7 @@ namespace spa.Models
 
         public string Tags { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public string FolderName { get; set; }
 
     }
 }

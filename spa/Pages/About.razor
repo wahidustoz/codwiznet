@@ -1,0 +1,21 @@
+@page "/about"
+@page "/aboutme"
+
+@using spa.Services
+@inject IMarkdownClient markdownClient
+
+<div class="row m-0 px-4">
+    <div class="col-sm-12 col-md-10 col-lg-8 mx-auto mt-3">
+        @(new MarkupString(Content))
+    </div>
+</div>
+
+@code 
+{
+    public string Content { get; set; } = string.Empty;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Content = await markdownClient.ParseMarkdownFromUrl("https://raw.githubusercontent.com/wahid-d/codwiz.net/dev/Aboutme/About.md");
+    }
+}
