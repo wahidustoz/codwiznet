@@ -22,13 +22,11 @@ namespace spa
                 client =>
                 {
                     client.BaseAddress = new Uri(builder.Configuration["codwiznet:Github:BaseUrl"].ToString());
-                    client.DefaultRequestHeaders.Add("Authorization", "token dd2e88bdfc4f76e1d78ae75636c0666c483fa94c");
                 });
 
             builder.Services.AddHttpClient("MarkdownClient",
                 client =>
                 {
-                    client.DefaultRequestHeaders.Add("Authorization", "token dd2e88bdfc4f76e1d78ae75636c0666c483fa94c");
                     client.BaseAddress = new Uri(builder.Configuration["codwiznet:Github:MarkdownUrl"].ToString());
                 });
 
