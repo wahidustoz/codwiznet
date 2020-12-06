@@ -8,7 +8,7 @@
     <h5>Read more</h5>
     @foreach (var post in Posts)
     {
-        <a href="/posts/@post.FolderName" class="row text-decoration-none text-dark read-more-link">
+        <a href="posts/@post.FolderName" class="row text-decoration-none text-dark read-more-link">
             @(new MarkupString(post.Title))
         </a>
     }
