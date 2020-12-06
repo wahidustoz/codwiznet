@@ -45,47 +45,54 @@ namespace spa.Services
                     continue;
                 }
 
-                var postContents = await mGitClient.GetFolderContents($"{mPostsUrl}/{postFolder.Name}");
-
-                if (postContents == null)
-                {
-                    mLogger.LogError($"Error while loading posts. Could not read post contents...");
-                    return new List<Post>();
-                }
-
-                var titleContent = postContents.Where(p =>
-                    p.Type == "file"
-                    && p.Name.Contains("title", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-
-                var descriptionContent = postContents.Where(p =>
-                    p.Type == "file"
-                    && p.Name.Contains("description", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-
-                var contentContent = postContents.Where(p =>
-                    p.Type == "file"
-                    && p.Name.Contains("content", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-
-                var tagsContent = postContents.Where(p =>
-                    p.Type == "file"
-                    && p.Name.Contains("tags", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-
-                var headerImageContent = postContents.Where(p =>
-                    p.Type == "file"
-                    && p.Name.Contains("headerimage", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                posts.Add(await GetPostAsync(postFolder.Name));
 
 
-                posts.Add(new Post()
-                {
-                    TitleUrl = titleContent?.DownloadUrl,
-                    DescriptionUrl = descriptionContent?.DownloadUrl,
-                    TagsUrl = tagsContent?.DownloadUrl,
-                    ContentUrl = contentContent?.DownloadUrl,
-                    HeaderImageUrl = headerImageContent?.DownloadUrl,
-                    CreatedAt = DateTime.Parse(postFolder.Name)
-                });
             }
 
             return posts;
+        }
+
+        public async Task<Post> GetPostAsync(string folderName)
+        {
+            var postContents = await mGitClient.GetFolderContents($"{mPostsUrl}/{folderName}");
+
+            if (postContents == null)
+            {
+                mLogger.LogError($"Error while loading posts. Could not read post contents...");
+                return new Post();
+            }
+
+            var titleContent = postContents.Where(p =>
+                p.Type == "file"
+                && p.Name.Contains("title", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            var descriptionContent = postContents.Where(p =>
+                p.Type == "file"
+                && p.Name.Contains("description", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            var contentContent = postContents.Where(p =>
+                p.Type == "file"
+                && p.Name.Contains("content", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            var tagsContent = postContents.Where(p =>
+                p.Type == "file"
+                && p.Name.Contains("tags", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            var headerImageContent = postContents.Where(p =>
+                p.Type == "file"
+                && p.Name.Contains("headerimage", System.StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+
+            return new Post()
+            {
+                TitleUrl = titleContent?.DownloadUrl,
+                DescriptionUrl = descriptionContent?.DownloadUrl,
+                TagsUrl = tagsContent?.DownloadUrl,
+                ContentUrl = contentContent?.DownloadUrl,
+                HeaderImageUrl = headerImageContent?.DownloadUrl,
+                FolderName = folderName
+            };
         }
     }
 }
