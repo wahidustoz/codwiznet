@@ -9,7 +9,7 @@
     <div class="col-sm-12 col-md-10 col-lg-8 mx-auto mt-0 mt-sm-1">
             @foreach (var post in posts)
             {
-                <a href="/posts/@post.FolderName" class="row my-1 text-decoration-none text-dark post-link py-0">
+                <a href="posts/@post.FolderName" class="row my-1 text-decoration-none text-dark post-link py-0">
                 @if(!string.IsNullOrWhiteSpace(post.HeaderImageUrl))
                 {
                     <div class="col-12">
