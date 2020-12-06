@@ -1,0 +1,75 @@
+code {
+    background-color: rgb(230, 230, 230) !important;
+    border-radius: 5px;
+    padding: 1px 5px;
+    margin: 0 3px;
+}
+
+.pl-k {
+    color: rgb(122, 155, 0) !important;
+}
+
+.pl-en {
+    color: rgb(0, 130, 154) !important;
+}
+.pl-smi {
+    color: rgb(28, 0, 255) !important;
+}
+
+.highlight {
+    border-radius: 3px;
+    background-color: rgb(230, 230, 230) !important;
+    max-height: 250px;
+    overflow: scroll;
+    margin: 1rem 0;
+}
+.highlight > pre{
+    padding: .5rem 1rem;
+}
+
+.read-more-link {
+    padding: .3rem 1rem;
+}
+
+.read-more-link:hover{
+    background-color: rgba(250, 250, 250, 1);
+    border-radius: 7px;
+    text-decoration: underline;
+}
+
+.read-more-link p{
+    padding: 0;
+}
+
+.post-link{
+    padding: 1rem;
+}
+
+.post-link:hover{
+    background-color: rgba(250, 250, 250, 1);
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.post-link-image
+{
+    max-height: 250px;
+    height: auto;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+h1 { margin: 2rem 0; }
+h2 { margin: 1.5rem 0; }
+h3 { margin: 1.2rem 0; }
+h4 { margin: .9rem 0; }
+h5 { margin: .6rem 0; }
+h6 { margin: .3rem 0; }
+
+@media only screen and (max-width: 600px) {
+    h1{ font-size: 1.5rem; }
+    h3{ font-size: .9rem; }
+    mt-5 { margin-top: 2rem; }
+    code { padding: 2px; }
+}
